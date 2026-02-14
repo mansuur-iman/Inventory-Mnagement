@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    a.add-category {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 10px 15px;
+      background-color: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    a.add-category:hover {
+      background-color: #2980b9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #3498db;
+      color: #fff;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tbody tr:nth-child(odd) {
+      background-color: #fff;
+    }
+
+    tbody tr:hover {
+      background-color: #ecf0f1;
+    }
+
+    td a {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    td a:hover {
+      color: #2980b9;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .actions input[type="password"] {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .actions button {
+      padding: 6px 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      background-color: #e74c3c;
+      color: #fff;
+    }
+
+    .actions button:hover {
+      background-color: #c0392b;
+      transform: translateY(-1px);
+    }
+
+    form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1><%= title %></h1>
+    <a href="/categories/new" class="add-category">Add Category</a>
+
+    <% if (categories && categories.length) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% categories.forEach((category,index) => { %>
+            <tr>
+              <td><%= index + 1%></td>
+              <td><a href="/categories/<%= category.id %>"><%= category.name %></a></td>
+              <td><%= category.description %></td>
+              <td class="actions">
+                <a href="/categories/<%= category.id %>/edit">Edit</a>
+                <form action="/categories/<%= category.id %>/delete" method="POST">
+                  <button type="submit" onclick="return confirm('Delete this category?')">Delete</button>
+                  <input
+                    type="password"
+                    name="admin_password"
+                    placeholder="Admin password"
+                    required
+                  />
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p style="text-align:center; color:#555;">No categories found.</p>
+    <% } %>
+  </div>
+</body>
+</html>
+
