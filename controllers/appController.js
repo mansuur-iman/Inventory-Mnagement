@@ -8,16 +8,19 @@ const lengthErr = "Must be between 1 and 30 characters";
 const validateCategory = [
   body("name")
     .trim()
-    .isAlpha()
-    .withMessage(`category name ${alphaErr}`)
     .notEmpty()
     .withMessage("category name is required")
+    .bail()
+    .isAlpha()
+    .withMessage(`category name ${alphaErr}`)
+    .bail()
     .isLength({ min: 1, max: 30 })
     .withMessage(`category name ${lengthErr}`),
   body("description")
     .trim()
     .notEmpty()
     .withMessage("category description is required")
+    .bail()
     .isLength({ min: 5 })
     .withMessage("Description must be atleat 5 characters."),
 ];
@@ -25,7 +28,7 @@ const validateCategory = [
 async function showAllCategories(req, res) {
   try {
     const categories = await db.getAllCategories();
-    res.render("categories", {
+    res.render("categories/index", {
       title: "All categories",
       categories,
     });
@@ -35,12 +38,12 @@ async function showAllCategories(req, res) {
   }
 }
 
-async function showCategoryById(re, res) {
+async function showCategoryById(req, res) {
   try {
     const { id } = req.params;
     const category = await db.getCategoryById(id);
 
-    res.render("category", {
+    res.render("categories/product", {
       title: "category",
       category,
     });
@@ -50,10 +53,24 @@ async function showCategoryById(re, res) {
   }
 }
 
-async function showForm(req, res) {
-  res.render("form", {
-    title: "Inventory Form",
+function showForm(req, res) {
+  res.render("categories/form", {
+    title: "New category",
+    category: null,
     errors: [],
+    action: "/categories/new",
+  });
+}
+
+async function editForm(req, res) {
+  const { id } = req.params;
+  const category = await db.getCategoryById(id);
+
+  res.render("categories/form", {
+    title: "Edit Category",
+    category,
+    errors: [],
+    action: `/categories/${id}/update`,
   });
 }
 
@@ -63,7 +80,7 @@ const insertIntoCategories = [
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("form", {
+      return res.status(400).render("categories/form", {
         title: "errors",
         errors: errors.array(),
       });
@@ -71,7 +88,7 @@ const insertIntoCategories = [
 
     const data = matchedData(req);
     await db.createCategory(data.name, data.description);
-    re.redirect("/");
+    res.redirect("/categories");
   },
 ];
 
@@ -79,7 +96,7 @@ async function deleteCategoryById(req, res) {
   try {
     const { id } = req.params;
     await db.deleteCategory(id);
-    res.redirect("/");
+    res.redirect("/categories");
   } catch (err) {
     console.error(err);
     res.status(500).send("couldnt delete category");
@@ -88,13 +105,19 @@ async function deleteCategoryById(req, res) {
 
 const updateTheCategory = [
   validateCategory,
-  async (re, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("form", {
+      return res.render("categories/form", {
         title: "errors",
+        category: {
+          id: id,
+          name: req.body.name,
+          description: req.body.description,
+        },
         errors: errors.array(),
+        action: `/categories/${id}/update`,
       });
     }
 
@@ -102,7 +125,7 @@ const updateTheCategory = [
     const { id } = req.params;
     await db.updateCategory(id, data.name, data.description);
 
-    res.redirect("/");
+    res.redirect("/categories");
   },
 ];
 
@@ -113,4 +136,5 @@ module.exports = {
   insertIntoCategories,
   deleteCategoryById,
   showForm,
+  editForm,
 };

@@ -1,5 +1,5 @@
-require('dotenv').config();
-const { Client } = require('pg');
+require("dotenv").config();
+const { Client } = require("pg");
 
 const SQL = `
 CREATE TABLE IF NOT EXISTS categories (
@@ -33,10 +33,10 @@ async function seed() {
   });
 
   try {
-    console.log('Starting seed...');
+    console.log("Starting seed...");
     await client.connect();
     await client.query(SQL);
-    console.log('Seeding finished!');
+    console.log("Seeding finished!");
   } catch (err) {
     console.error(err);
   } finally {

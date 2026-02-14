@@ -24,7 +24,7 @@ async function createCategory(name, description) {
 
 async function updateCategory(id, name, description) {
   const result = await pool.query(
-    "UPDATE categories SET name = $1, description = $2 WHERE id = $3 RETURNING *",
+    "UPDATE categories SET name = $2, description = $3 WHERE id = $1 RETURNING *",
     [id, name, description],
   );
   return result.rows[0];
@@ -100,9 +100,29 @@ async function expiryingSoonItems() {
   return result.rows;
 }
 
+async function searchProduct(keyword) {
+  const { rows } = await pool.query("SELECT * FROM items WHERE name ILIKE $1", [
+    `%${keyword}%`,
+  ]);
+  return rows;
+}
+
 async function getAllProductsWithCategory() {
   const result = await pool.query(
-    "SELECT items.id AS item_id,items.name AS item_name,items.description AS item_description,items.quantity,items.price,items.created_at,items.expiry_date,categories.id AS category_id,categories.name AS category_name,categories.description AS category_description FROM items LEFT JOIN categories IN items.category_id = categories.id ORDER BY items.created_at DESC",
+    `SELECT 
+      items.id AS item_id,
+      items.name AS item_name,
+      items.description AS item_description,
+      items.quantity,
+      items.price,
+      items.created_at,
+      items.expiry_date,
+      categories.id AS category_id,
+      categories.name AS category_name,
+      categories.description AS category_description 
+    FROM items 
+    LEFT JOIN categories ON items.category_id = categories.id 
+    ORDER BY items.created_at DESC`,
   );
   return result.rows;
 }
@@ -122,4 +142,5 @@ module.exports = {
   lowStockItems,
   expiryingSoonItems,
   getAllProductsWithCategory,
+  searchProduct,
 };
