@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-family: sans-serif; }
+        th { background: #f4f4f4; padding: 12px; text-align: left; border-bottom: 2px solid #ccc; }
+        td { padding: 12px; border-bottom: 1px solid #eee; }
+        .low-stock { color: #d9534f; font-weight: bold; background: #fff5f5; }
+        .btn-edit { color: #007bff; text-decoration: none; }
+        .btn-delete { color: #dc3545; background: none; border: none; cursor: pointer; padding: 0; font-size: inherit; }
+        .category-badge { background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; }
+        /* Style for the number column */
+        .row-num { color: #888; font-size: 0.9em; width: 30px; }
+    </style>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <a href="/products/new" style="display: inline-block; background: #28a745; color: white; padding: 10px 15px; text-decoration: none; border-radius: 4px;">+ Add New Product</a>
+
+    <% if (products && products.length) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th> <th>Product</th>
+            <th>Category</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Expiry</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% products.forEach((product, index) => { %> <tr>
+              <td class="row-num"><%= index + 1 %></td> <td>
+                <a href="/products/<%=product.item_id%>"><strong><%= product.item_name %></strong></a>
+              </td>
+              <td>
+                <span class="category-badge">
+                  <%= product.category_name || 'General' %>
+                </span>
+              </td>
+              <td class="<%= product.quantity < 5 ? 'low-stock' : '' %>">
+                <%= product.quantity %>
+              </td>
+              <td>$<%= parseFloat(product.price).toFixed(2) %></td>
+              <td>
+                <%= product.expiry_date ? new Date(product.expiry_date).toLocaleDateString() : '—' %>
+              </td>
+              <td>
+                <div style="display: flex; gap: 10px;">
+                  <form action="/products/<%= product.item_id %>/edit" method="GET">
+                      <button type="submit">Edit</button>
+                </form>
+
+                    <form action="/products/<%= product.item_id %>/delete" method="POST" style="display:inline;">
+                        <button type="submit" class="btn-delete" onclick="return confirm('Delete this product?')">Delete</button>
+                         <input type="password" name="admin_password" placeholder="admin password" required>
+                    </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p style="margin-top: 20px; color: #666;">No products match this filter.</p>
+    <% } %>
+</body>
+</html>
