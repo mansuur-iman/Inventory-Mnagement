@@ -121,6 +121,12 @@
             <% } %>
           </td>
         </tr>
+        <tr>
+          <th>Created At</th>
+          <td>
+            <%= new Date(product.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+          </td>
+        </tr>
       </table>
 
       <hr>
