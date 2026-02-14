@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= product.name %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+        color: #333;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .product-card {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #2c3e50;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th, td {
+        padding: 12px 15px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #3498db;
+        color: #fff;
+        border-radius: 6px 6px 0 0;
+      }
+
+      tr:nth-child(even) td {
+        background-color: #f9f9f9;
+      }
+
+      tr:nth-child(odd) td {
+        background-color: #fff;
+      }
+
+      .alert-low-stock {
+        color: #e74c3c;
+        font-weight: bold;
+      }
+
+      .alert-expiring {
+        color: #e67e22;
+        font-weight: bold;
+      }
+
+      .actions {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .actions a {
+        text-decoration: none;
+        color: #3498db;
+        font-weight: bold;
+        margin: 0 10px;
+        transition: color 0.2s;
+      }
+
+      .actions a:hover {
+        color: #2980b9;
+      }
+
+      hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 25px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="product-card">
+      <h1><%= product.name %></h1>
+
+      <table>
+        <tr>
+          <th>Description</th>
+          <td><%= product.description %></td>
+        </tr>
+        <tr>
+          <th>Quantity</th>
+          <td>
+            <%= product.quantity %>
+            <% if (product.quantity <= 5) { %>
+              <span class="alert-low-stock">⚠️ Low Stock</span>
+            <% } %>
+          </td>
+        </tr>
+        <tr>
+          <th>Price</th>
+          <td>$<%= product.price %></td>
+        </tr>
+        <tr>
+          <th>Expiry Date</th>
+          <td>
+            <%= product.expiry_date 
+                  ? new Date(product.expiry_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) 
+                  : 'NO EXPIRY' %>
+            <% if (product.expiry_date && new Date(product.expiry_date) - new Date() <= 7*24*60*60*1000) { %> 
+              <span class="alert-expiring">⚠️ Expiring Soon</span>
+            <% } %>
+          </td>
+        </tr>
+      </table>
+
+      <hr>
+
+      <div class="actions">
+        <a href="/products/<%= product.id %>/edit">Edit Product</a> | 
+        <a href="/products">Back to List</a>
+      </div>
+    </div>
+  </body>
+</html>
