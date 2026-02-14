@@ -19,7 +19,7 @@ async function getProductWithItsCategory(req, res) {
       result: result,
     });
   } catch (err) {
-    console.error(err);
+    console.error("Database fetch error:", err);
     res.status(500).send("Error fetching dashboard data");
   }
 }

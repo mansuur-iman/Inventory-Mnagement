@@ -81,8 +81,10 @@ const insertIntoCategories = [
 
     if (!errors.isEmpty()) {
       return res.status(400).render("categories/form", {
-        title: "errors",
+        title: "New category",
         errors: errors.array(),
+        category: req.body, // send back the input
+        action: "/categories/new", // send action
       });
     }
 
@@ -92,27 +94,17 @@ const insertIntoCategories = [
   },
 ];
 
-async function deleteCategoryById(req, res) {
-  try {
-    const { id } = req.params;
-    await db.deleteCategory(id);
-    res.redirect("/categories");
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("couldnt delete category");
-  }
-}
-
 const updateTheCategory = [
   validateCategory,
   async (req, res) => {
+    const { id } = req.params; // make sure to declare id first
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
       return res.render("categories/form", {
-        title: "errors",
+        title: "Edit Category",
         category: {
-          id: id,
+          id,
           name: req.body.name,
           description: req.body.description,
         },
@@ -122,7 +114,6 @@ const updateTheCategory = [
     }
 
     const data = matchedData(req);
-    const { id } = req.params;
     await db.updateCategory(id, data.name, data.description);
 
     res.redirect("/categories");
