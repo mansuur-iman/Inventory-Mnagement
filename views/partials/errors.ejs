@@ -1,0 +1,7 @@
+<% if (errors && errors.length) { %>
+  <ol class="errors">
+    <% errors.forEach(err => { %>
+      <li style="color: red;"><%= err.msg %></li>
+    <% }) %>
+  </0l>
+<% } %>
