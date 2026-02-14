@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f8;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 30px 40px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        text-align: center;
+      }
+
+      p {
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .label {
+        font-weight: bold;
+        color: #555;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+      }
+
+      .actions a, .actions button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        font-weight: bold;
+        text-decoration: none;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+      }
+
+      .actions a {
+        background-color: #3498db;
+        color: #fff;
+      }
+
+      .actions a:hover {
+        background-color: #2980b9;
+        transform: translateY(-1px);
+      }
+
+      .actions button {
+        background-color: #e74c3c;
+        color: #fff;
+      }
+
+      .actions button:hover {
+        background-color: #c0392b;
+        transform: translateY(-1px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Category: <%= category.name %></h1>
+      
+      <p><span class="label">Description:</span> <%= category.description %></p>
+      <p><span class="label">Created At:</span> <%= new Date(category.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></p>
+
+      <div class="actions">
+        <a href="/categories/<%= category.id %>/edit">Edit</a>
+
+        <form action="/categories/<%= category.id %>/delete" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Delete this category?')">Delete</button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
+
