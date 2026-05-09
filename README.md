@@ -2,6 +2,9 @@
 
 A web application for managing grocery store inventory — track products, organize categories, monitor stock levels, and get alerts for expiring items.
 
+## LIVE DEMO
+https://grocerry-inventory-management.onrender.com
+
 ## Features
 
 - **Product Management** — Add, edit, delete, and search grocery items
